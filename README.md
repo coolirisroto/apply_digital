@@ -1,8 +1,78 @@
-# Getting Started with Create React App
+# Front end test documentation
+
+## Folder Structure
+
+```
+.
+├── src
+│   ├── assets
+│   │   ├── icons
+│   │   │
+│   ├── clients
+│   │   ├── angolia
+│   │   │
+│   ├── components
+│   │   ├── Button
+│   │   ├── Header
+│   │   ├── NewsItem
+│   │   ├── Pagination
+│   │   │
+│   ├── screens
+│   │   ├── Home
+│   │   │
+│   ├── styles
+│   │   ├── colors
+│   │   │
+│   ├── utils
+│   │   ├── http
+│   │   ├── storage
+│
+```
+
+#### All http requests should be made through the Http util.
+
+## Continuous Deployment (Github + [Netlify](https://app.netlify.com/)).
+
+## Unit Testing.
+
+- Unit tests with [Jest](https://github.com/facebook/jest) and [react-native-testing-library](https://github.com/callstack/react-native-testing-library).
+- Create Unit Testing for any implementation under the `__tests__` folder, for example `components/input.test.tsx`.
+
+## Typescript.
+
+- Prefer Ambient declarations style.
+- In components use type for state and props definitions.
+- For global shared definitions use interfaces in the typing definition.
+- For global shared enums use interfaces in the enums definition
+- DO NOT use `Any`.
+
+## libraries
+
+|                Library                | Usage | Coverage | License |
+| :-----------------------------------: | :---: | :------: | :-----: |
+|         axios                         |       |          |         |
+|      classnames                       |       |          |         |
+|        date-fns                       |       |          |         |
+|         lodash                        |       |          |         |
+
+
+## UI components
+
+|     Component     | Description |
+| :---------------: | :---------: |
+|     Button        |             |
+|     Dropdown      |             |
+|     Header        |             |
+|     NewsItem      |             |
+|     Pagination  |             |
+
+
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
