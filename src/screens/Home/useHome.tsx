@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchItems } from '../../clients/algolia'
 import { isEmpty } from 'lodash';
 import { getStorageValue, setStorageValue } from '../../utils/storage'
@@ -19,7 +19,7 @@ const useHome = () => {
     const [numberOfPages, setnumberOfPages] = useState<number>(0)
     const [page, setPage] = useState(1)
 
-    const getParams = () => {
+    const getParams = useCallback(() => {
         const query = dropdownValue?.label?.toLowerCase()
         const params = {
             query,
@@ -27,7 +27,29 @@ const useHome = () => {
             hitsPerPage: HITS_PER_PAGE
         }
         return params;
-    }
+    },[dropdownValue?.label, page])
+
+    const getFavorites = () => getStorageValue("favorites") || [];
+
+    const matchFavorites = useCallback((items: INewsItem[]) => {
+        const favoritesList = getFavorites();
+        items.forEach((item, index) => {
+            items[index] = {
+                ...item,
+                isFavorite: !!(favoritesList && favoritesList.find((favorite: { created_at_i: string; }) => favorite.created_at_i === item.created_at_i))
+            }
+        })
+        return items
+    },[])
+
+    const getNewsList = useCallback((params: any = {}) => {
+        setIsLoading(true)
+        fetchItems(params).then(data => {
+            const result = data.hits.filter(item => !isEmpty(item.author) && !isEmpty(item.story_title) && !isEmpty(item.story_url) && !isEmpty(item.created_at))
+            setNewsList(matchFavorites(result))
+            setnumberOfPages(data.nbPages)
+        }).finally(() => setIsLoading(false))
+    },[matchFavorites])
 
     useEffect(() => {
         if(filterSelected === filterTypes.FAVS){
@@ -38,32 +60,7 @@ const useHome = () => {
         else {
             getNewsList(getParams());
         }
-      }, [filterSelected, dropdownValue, page])
-
-
-
-    const getFavorites = () => getStorageValue("favorites") || [];
-
-    const matchFavorites = (items: INewsItem[]) => {
-        const favoritesList = getFavorites();
-        items.forEach((item, index) => {
-            items[index] = {
-                ...item,
-                isFavorite: !!(favoritesList && favoritesList.find((favorite: { created_at_i: string; }) => favorite.created_at_i === item.created_at_i))
-            }
-        })
-        return items
-    }
-
-    const getNewsList = (params: any = {}) => {
-        setIsLoading(true)
-        fetchItems(params).then(data => {
-            const result = data.hits.filter(item => !isEmpty(item.author) && !isEmpty(item.story_title) && !isEmpty(item.story_url) && !isEmpty(item.created_at))
-            setNewsList(matchFavorites(result))
-            setnumberOfPages(data.nbPages)
-        }).finally(() => setIsLoading(false))
-    }
-
+      }, [filterSelected, dropdownValue, page, getNewsList, getParams])
 
     const addOrRemoveFavorite = (item: INewsItem) => {
         const currentList = newsList;
