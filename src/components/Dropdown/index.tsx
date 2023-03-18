@@ -26,6 +26,7 @@ const Dropdown: React.FC<Props> = ({ items, dropdownTitle = 'Select your news', 
             const defaultValueIndex = items.findIndex(item => item.id === defaultValue.id)
             onSaveItemSelected(defaultValueIndex, defaultValue)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleSelected = (indexOnClick: number, objectSelected: DropdownItemType) => {
